@@ -1,18 +1,20 @@
-# Use Python 3.10.19 base image
+# Use Python 3.10.19
 FROM python:3.10.19-slim
 
 # Set working directory
 WORKDIR /main
 
-# Copy requirements and install dependicies
+# Copy requirements first for Docker layer caching
 COPY requirements.txt .
-RUN pip install --no--cache-dir -r requirements.txt
 
-# Copy rest of application code
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
 COPY . .
 
-# Expose the application port
+# Expose FastAPI port
 EXPOSE 8000
 
-# command to start FastAPI application
-CMD [ "uvicorn", "app:main", "--host", "0.0.0.0", "--port", "8000" ]
+# Start FastAPI
+CMD ["uvicorn", "Model.app:app", "--host", "0.0.0.0", "--port", "8000"]
