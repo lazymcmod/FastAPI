@@ -1,42 +1,15 @@
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel,Field,computed_field
-from typing import Literal,Annotated
+from Model.predict import predict_output
 from Schema.user_input import UserInput
-from Model.predict import predict_output,model,MODEL_VERSION
+from Schema.prediction_response import PredictionResponse
+
 
 app = FastAPI()
 
-# human readable
-@app.get('/')
-def home():
-    return {'message': 'Insurance Premium Predictor API'}
 
-# machine readable
-@app.get('/health')
-def health():
-    return {
-        'status': 'OK',
-        'version': MODEL_VERSION,
-        'Model_loaded': model is not None
-    }
+@app.post("/predict", response_model=PredictionResponse)
+def predict_premium(user_input: UserInput):
 
-@app.post('/predict')
-def predict_premium(data: UserInput):
+    result = predict_output(user_input.model_dump())
 
-    user_input = {
-        'bmi': data.bmi,
-        'age_group': data.age_group,
-        'lifestyle_risk': data.lifestyle_risk,
-        'city_tier': data.city_tier,
-        'income_lpa': data.income_lpa,
-        'occupation': data.occupation
-    }
-    try:
-        prediction = predict_output(user_input)
-        return {
-        JSONResponse(status_code=200,content={'response': prediction})
-        }
-    except Exception as e:
-
-        return JSONResponse(status_code=500,content=str(e))
+    return result
