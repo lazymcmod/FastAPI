@@ -88,6 +88,13 @@ class UserInput(BaseModel):
     occupation: Annotated[Literal['retired', 'freelancer', 'student', 'government_job',
        'business_owner', 'unemployed', 'private_job'], Field(...,description='Occupation of the user')]
 
+
+    @computed_field
+    @property
+    def normalize_city(cls,v: str) -> str:
+        v = v.strip().title()
+        return v
+
     @computed_field
     @property
     def bmi(self) -> float:
