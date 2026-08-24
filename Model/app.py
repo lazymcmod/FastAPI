@@ -9,6 +9,9 @@ import pickle
 with open('Model/model.pkl','rb') as f:
     model = pickle.load(f)
 
+# ML flow
+MODEL_VERSION = '1.0.0'
+
 app = FastAPI()
 
 # Tier 1 Cities
@@ -138,11 +141,14 @@ class UserInput(BaseModel):
 @app.get('/')
 def home():
     return {'message': 'Insurance Premium Predictor API'}
+
 # machine readable
 @app.get('/health')
 def health():
     return {
-        'status': 'OK'
+        'status': 'OK',
+        'version': MODEL_VERSION,
+        'Model_loaded': model is not None
     }
 
 @app.post('/predict')
