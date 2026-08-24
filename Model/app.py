@@ -134,6 +134,17 @@ class UserInput(BaseModel):
             return 3 
 
 
+# human readable
+@app.get('/')
+def home():
+    return {'message': 'Insurance Premium Predictor API'}
+# machine readable
+@app.get('/health')
+def health():
+    return {
+        'status': 'OK'
+    }
+
 @app.post('/predict')
 def predict_premium(data: UserInput):
 
