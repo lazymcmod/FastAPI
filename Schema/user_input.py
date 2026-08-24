@@ -17,12 +17,6 @@ class UserInput(BaseModel):
 
     @computed_field
     @property
-    def normalize_city(cls,v: str) -> str:
-        v = v.strip().title()
-        return v
-
-    @computed_field
-    @property
     def bmi(self) -> float:
         return self.weight/(self.height**2)
 
